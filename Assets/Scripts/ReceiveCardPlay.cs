@@ -5,13 +5,13 @@ using UnityEngine.EventSystems;
 
 public class ReceiveCardPlay : MonoBehaviour, IDropHandler
 {
-    public HealthBar healthBar;
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log("received card");
         Debug.Log(eventData.currentInputModule.name);
         GameObject droppedCard = eventData.pointerDrag;
         Destroy(droppedCard);
-        healthBar.takeDamage(20);
+        GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<HealthBar>().takeDamage(20);
+        GameObject.FindGameObjectWithTag("Enemy").GetComponentInChildren<HealthBar>().takeDamage(20);
     }
 }
