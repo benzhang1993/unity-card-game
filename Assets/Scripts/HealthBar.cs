@@ -38,4 +38,9 @@ public class HealthBar : MonoBehaviour
         slider.value = currentHealth;
         healthText.text = currentHealth.ToString() + " / " + maxHealth.ToString();
     }
+
+    public int getCurrentHealth()
+    {
+        return currentHealth;
+    }
 }
