@@ -33,6 +33,7 @@ public class BattleHandler : MonoBehaviour
         playerGO = initializeUnit(playerPrefab, playerBattleStation, playerUnit);
         enemyGO = initializeUnit(enemyPrefab, enemyBattleStation, enemyUnit);
         playerBattleAnimation = playerGO.GetComponent<BattleAnimation>();
+        playerBattleAnimation.setAttacker(playerGO);
 
         yield return new WaitForSeconds(1f);
 
@@ -62,8 +63,7 @@ public class BattleHandler : MonoBehaviour
 
     public void playCard(GameObject cardPlayed)
     {
-        playerBattleAnimation.performDashAttack(playerGO, enemyGO, ()=> {
-            Debug.Log("callback from dashattack");
+        playerBattleAnimation.performDashAttack(enemyGO, ()=> {
             HealthBar enemyHealthBar = GameObject.FindGameObjectWithTag("Enemy").GetComponentInChildren<HealthBar>();
             enemyHealthBar.takeDamage(20);
             if(enemyGO.GetComponentInChildren<HealthBar>().getCurrentHealth() <= 0)
