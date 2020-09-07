@@ -24,7 +24,6 @@ public class BattleHandler : MonoBehaviour
 
     void Start()
     {
-        playerBattleAnimation = playerPrefab.GetComponent<BattleAnimation>();
         state = BattleState.START;
         StartCoroutine(setUpBattle());   
     }
@@ -33,6 +32,7 @@ public class BattleHandler : MonoBehaviour
     {
         playerGO = initializeUnit(playerPrefab, playerBattleStation, playerUnit);
         enemyGO = initializeUnit(enemyPrefab, enemyBattleStation, enemyUnit);
+        playerBattleAnimation = playerGO.GetComponent<BattleAnimation>();
 
         yield return new WaitForSeconds(1f);
 
@@ -62,7 +62,7 @@ public class BattleHandler : MonoBehaviour
 
     public void playCard(GameObject cardPlayed)
     {
-        playerBattleAnimation.performDashAttack(enemyGO, ()=> {
+        playerBattleAnimation.performDashAttack(playerGO, enemyGO, ()=> {
             Debug.Log("callback from dashattack");
             HealthBar enemyHealthBar = GameObject.FindGameObjectWithTag("Enemy").GetComponentInChildren<HealthBar>();
             enemyHealthBar.takeDamage(20);

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
-enum State { Idle, Dashing, Attack}
 public class BattleAnimation : MonoBehaviour
 {
-    public GameObject attacker;
+    private GameObject attacker;
     private GameObject target;
-    [SerializeField] private State state;
+    private State state;
+    private enum State { Idle, Dashing, Attack }
     private Action onDashComplete;
 
     private void Awake()
@@ -40,18 +39,21 @@ public class BattleAnimation : MonoBehaviour
         }
     }
 
-    public void performDashAttack(GameObject target, Action onAttackComplete)
+    public void performDashAttack(GameObject attacker, GameObject target, Action onAttackComplete)
     {
+        this.attacker = attacker;
         this.target = target;
         dashToPosition(() => {
             state = State.Attack;
             onAttackComplete();
         });
     }
-
+ 
     private void dashToPosition(Action onDashComplete)
     {
         state = State.Dashing;
         this.onDashComplete = onDashComplete;
+        Debug.Log("State: " + state);
+        Debug.Log(attacker.GetInstanceID());
     }
 }
