@@ -7,7 +7,8 @@ public enum BattleState { START, PLAYERTURN, ENEMYTURN, VICTORY, DEFEATED }
 
 public class BattleHandler : MonoBehaviour
 {
-    public GameObject card1;
+    public Card card;
+    public GameObject cardPrefab;
     public GameObject handArea;
     public GameObject battleState;
     public GameObject playerPrefab;
@@ -56,7 +57,8 @@ public class BattleHandler : MonoBehaviour
         movesLeft = 5;
         for(int i = 0; i < 5; i++)
         {
-            GameObject playerCard = Instantiate(card1, new Vector3(0, 0, 0), Quaternion.identity);
+            GameObject playerCard = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            playerCard.GetComponent<CardDisplay>().card = card;
             playerCard.transform.SetParent(handArea.transform, false);
         }
     }

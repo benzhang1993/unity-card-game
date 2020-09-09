@@ -26,7 +26,7 @@ public class BattleAnimation : MonoBehaviour
             case State.Dashing:
                 Debug.Log(targetLocation.x + " " + attacker.transform.position.x);
                 Vector3 baseMovement = (targetLocation.x - attacker.transform.position.x > 0) ? new Vector3(1, 0, 0) : new Vector3(-1, 0, 0);
-                float dashSpeed = 20f;
+                float dashSpeed = 25f;
                 float reachedDistance = 1.5f;
                 attacker.GetComponent<Animator>().SetBool("Walking", true);
                 attacker.transform.position += baseMovement * dashSpeed * Time.deltaTime;
