@@ -9,8 +9,10 @@ public class ReceiveCardPlay : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log("received card");
-        GameObject droppedCard = eventData.pointerDrag;
-        battleHandler.GetComponent<BattleHandler>().playCard(droppedCard);
-        Destroy(droppedCard);
+        GameObject playedCard = eventData.pointerDrag;
+        playedCard.SetActive(false);
+        battleHandler.GetComponent<BattleHandler>().playCard(playedCard, ()=> {
+            Destroy(playedCard);
+        });     
     }
 }

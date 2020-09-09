@@ -24,7 +24,6 @@ public class BattleAnimation : MonoBehaviour
             case State.Idle:
                 break;
             case State.Dashing:
-                Debug.Log(targetLocation.x + " " + attacker.transform.position.x);
                 Vector3 baseMovement = (targetLocation.x - attacker.transform.position.x > 0) ? new Vector3(1, 0, 0) : new Vector3(-1, 0, 0);
                 float dashSpeed = 25f;
                 float reachedDistance = 1.5f;
@@ -42,7 +41,7 @@ public class BattleAnimation : MonoBehaviour
         }
     }
 
-    public void performDashAttack(GameObject target, Action onAttackComplete)
+    public void performDashAttack(GameObject target, int damage, Action onAttackHit, Action onAttackComplete)
     {
         this.target = target;
         Vector3 enemyLocation = target.transform.position;
@@ -51,6 +50,8 @@ public class BattleAnimation : MonoBehaviour
 
         dashToPosition(enemyLocation, () => {
             attacker.GetComponent<Animator>().SetTrigger("Attack");
+            // animate damage taken
+            onAttackHit();
             StartCoroutine(WaitForAnimation(attacker.GetComponent<Animator>(), ()=>
             {
                 dashToPosition(attackerOriginalLocation, () => {

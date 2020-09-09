@@ -8,7 +8,6 @@ public enum BattleState { START, PLAYERTURN, ENEMYTURN, VICTORY, DEFEATED }
 
 public class BattleHandler : MonoBehaviour
 {
-    public Card card;
     public Deck deck;
     public Card[] cardSOs;
     public GameObject cardPrefab;
@@ -74,15 +73,23 @@ public class BattleHandler : MonoBehaviour
         {
             GameObject playerCard = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             playerCard.GetComponent<CardDisplay>().card = hand[i];
+            playerCard.GetComponent<CardEffect>().card = hand[i];
             playerCard.transform.SetParent(handArea.transform, false);
         }
     }
 
-    public void playCard(GameObject cardPlayed)
+    public void playCard(GameObject cardPlayed, Action onPlayCardComplete)
     {
-        playerBattleAnimation.performDashAttack(enemyGO, ()=> {
+        playerBattleAnimation.performDashAttack(enemyGO, cardPlayed.GetComponent<CardEffect>().getDamage(),
+        // on attack hit callback
+        ()=>
+        {
             HealthBar enemyHealthBar = GameObject.FindGameObjectWithTag("Enemy").GetComponentInChildren<HealthBar>();
-            enemyHealthBar.takeDamage(20);
+            enemyHealthBar.takeDamage(cardPlayed.GetComponent<CardEffect>().getDamage());
+        }
+        // on attack complete callback
+        , 
+        ()=> {
             if(enemyGO.GetComponentInChildren<HealthBar>().getCurrentHealth() <= 0)
             {
                 state = BattleState.VICTORY;
@@ -92,6 +99,7 @@ public class BattleHandler : MonoBehaviour
             { 
                 StartCoroutine(enemyTurn());
             }
+            onPlayCardComplete();
         });
     }
 
