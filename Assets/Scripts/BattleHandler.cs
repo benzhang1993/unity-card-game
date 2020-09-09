@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,8 @@ public enum BattleState { START, PLAYERTURN, ENEMYTURN, VICTORY, DEFEATED }
 public class BattleHandler : MonoBehaviour
 {
     public Card card;
+    public Deck deck;
+    public Card[] cardSOs;
     public GameObject cardPrefab;
     public GameObject handArea;
     public GameObject battleState;
@@ -26,7 +29,8 @@ public class BattleHandler : MonoBehaviour
     void Start()
     {
         state = BattleState.START;
-        StartCoroutine(setUpBattle());   
+        deck = new Deck();
+        StartCoroutine(setUpBattle());
     }
 
     IEnumerator setUpBattle()
@@ -35,6 +39,8 @@ public class BattleHandler : MonoBehaviour
         enemyGO = initializeUnit(enemyPrefab, enemyBattleStation, enemyUnit);
         playerBattleAnimation = playerGO.GetComponent<BattleAnimation>();
         playerBattleAnimation.setAttacker(playerGO);
+
+        setUpDeck();
 
         yield return new WaitForSeconds(1f);
 
@@ -51,14 +57,23 @@ public class BattleHandler : MonoBehaviour
         return unitGO;
     }
 
+    public void setUpDeck()
+    {
+        // Resource.LoadAll only looks for folders under the "Resources" folder
+        System.Object[] loadedCards = Resources.LoadAll("Cards", typeof(Card));
+        cardSOs = Array.ConvertAll(loadedCards, item => (Card) item);
+        deck.loadCardArray(cardSOs);
+    }
+
     void playerTurn()
     {
         battleState.GetComponent<Text>().text = "Your Turn";
         movesLeft = 5;
-        for(int i = 0; i < 5; i++)
+        List<Card> hand = deck.draw(5); 
+        for(int i = 0; i < hand.Count; i++)
         {
             GameObject playerCard = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-            playerCard.GetComponent<CardDisplay>().card = card;
+            playerCard.GetComponent<CardDisplay>().card = hand[i];
             playerCard.transform.SetParent(handArea.transform, false);
         }
     }
