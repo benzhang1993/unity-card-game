@@ -17,13 +17,13 @@ public class BattleHandler : MonoBehaviour
     public GameObject enemyPrefab;
     public Transform playerBattleStation;
     public Transform enemyBattleStation;
-    private UnitInfo playerUnit;
-    private UnitInfo enemyUnit;
+    private PlayerInfo playerInfo;
+    private MonsterInfo enemyInfo;
     private GameObject playerGO;
     private GameObject enemyGO;
     public BattleState state;
-    public BattleAnimation playerBattleAnimation;
-    public BattleAnimation enemyBattleAnimation;
+    public BattleAnimator playerBattleAnimator;
+    public BattleAnimator enemyBattleAnimator;
     Action onPlayCardComplete;
     private int movesLeft = 5;
 
@@ -36,12 +36,12 @@ public class BattleHandler : MonoBehaviour
 
     IEnumerator setUpBattle()
     {
-        playerGO = initializeUnit(playerPrefab, playerBattleStation, playerUnit);
-        enemyGO = initializeUnit(enemyPrefab, enemyBattleStation, enemyUnit);
-        playerBattleAnimation = playerGO.GetComponent<BattleAnimation>();
-        playerBattleAnimation.setActor(playerGO);
-        enemyBattleAnimation = enemyGO.GetComponent<BattleAnimation>();
-        enemyBattleAnimation.setActor(enemyGO);
+        playerGO = initializePlayer(playerPrefab, playerBattleStation);
+        enemyGO = initializeMonster(enemyPrefab, enemyBattleStation);
+        playerBattleAnimator = playerGO.GetComponent<BattleAnimator>();
+        playerBattleAnimator.setActor(playerGO);
+        enemyBattleAnimator = enemyGO.GetComponent<BattleAnimator>();
+        enemyBattleAnimator.setActor(enemyGO);
 
         setUpDeck();
 
@@ -51,12 +51,20 @@ public class BattleHandler : MonoBehaviour
         playerTurn();
     }
 
-    GameObject initializeUnit(GameObject unitPrefab, Transform unitBattleStation, UnitInfo unitInfo)
+    GameObject initializePlayer(GameObject unitPrefab, Transform unitBattleStation)
     {
         GameObject unitGO = Instantiate(unitPrefab, unitBattleStation);
-        unitInfo = unitPrefab.GetComponent<UnitInfo>();
-        unitGO.transform.Find("UnitName").gameObject.GetComponent<Text>().text = unitInfo.unitName;
-        unitGO.GetComponentInChildren<HealthBar>().initialize(unitInfo.unitMaxHP);
+        return unitGO;
+    }
+
+    // TODO - change return type to List<GameObject> for list of monsters in battle
+    GameObject initializeMonster(GameObject unitPrefab, Transform unitBattleStation)
+    {
+        // TODO - selective load monster instead of all
+        System.Object[] loadedMonsters = Resources.LoadAll("Monsters", typeof(Monster));
+
+        GameObject unitGO = Instantiate(unitPrefab, unitBattleStation);
+        unitGO.GetComponent<MonsterInfo>().monster = (Monster) loadedMonsters[0];
         return unitGO;
     }
 
@@ -89,11 +97,11 @@ public class BattleHandler : MonoBehaviour
         CardEffect cardEffect = cardPlayed.GetComponent<CardEffect>();
         if(cardEffect.getDamage() != 0)
         {
-            processDashAttackEffect(playerGO, enemyGO, playerBattleAnimation, enemyBattleAnimation, cardPlayed.GetComponent<CardEffect>().getDamage(), postPlayerTurn);
+            processDashAttackEffect(playerGO, enemyGO, playerBattleAnimator, enemyBattleAnimator, cardPlayed.GetComponent<CardEffect>().getDamage(), postPlayerTurn);
         }
         else if(cardEffect.getHealing() != 0)
         {
-            processHealingEffect(playerGO, playerGO, playerBattleAnimation, enemyBattleAnimation, cardPlayed.GetComponent<CardEffect>().getHealing(), postPlayerTurn);
+            processHealingEffect(playerGO, playerGO, playerBattleAnimator, enemyBattleAnimator, cardPlayed.GetComponent<CardEffect>().getHealing(), postPlayerTurn);
         }
         else if(cardEffect.getShielding() != 0)
         {
@@ -109,11 +117,11 @@ public class BattleHandler : MonoBehaviour
         yield return new WaitForSeconds(.5f);
         battleState.GetComponent<Text>().text = "Enemy Turn";
         int enemyAttackDamage = 50;
-        processDashAttackEffect(enemyGO, playerGO, enemyBattleAnimation, playerBattleAnimation, enemyAttackDamage, postEnemyTurn);
+        processDashAttackEffect(enemyGO, playerGO, enemyBattleAnimator, playerBattleAnimator, enemyAttackDamage, postEnemyTurn);
     }
 
-    private void processHealingEffect(GameObject healerGO, GameObject targetGO, BattleAnimation healerAnimator, 
-        BattleAnimation targetAnimator, int healing, Action postAnimation)
+    private void processHealingEffect(GameObject healerGO, GameObject targetGO, BattleAnimator healerAnimator, 
+        BattleAnimator targetAnimator, int healing, Action postAnimation)
     {
         healerAnimator.performHealingAnimation(targetGO, healing,
         // on attack hit callback
@@ -125,8 +133,8 @@ public class BattleHandler : MonoBehaviour
         });
     }
 
-    private void processDashAttackEffect(GameObject attackerGO, GameObject targetGO, BattleAnimation attackerAnimator, 
-        BattleAnimation targetAnimator, int damage, Action postAnimation)
+    private void processDashAttackEffect(GameObject attackerGO, GameObject targetGO, BattleAnimator attackerAnimator, 
+        BattleAnimator targetAnimator, int damage, Action postAnimation)
     {
         attackerAnimator.performDashAttackAnimation(targetGO, damage,
         // on attack hit callback

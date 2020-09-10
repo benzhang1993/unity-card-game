@@ -186,6 +186,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d9ec02d16cbd5b4b96cbcfba6628001, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerNameText: {fileID: 5951188016835548494}
+  healthBar: {fileID: 6067728556259489748}
   unitName: Ben
   unitMaxHP: 100
 --- !u!114 &2082694980175289160
@@ -197,7 +199,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1883079128686335121}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd6205d47366733438226283211172b1, type: 3}
+  m_Script: {fileID: 11500000, guid: 46d27e23e536b9943bf632720c749c46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!223 &7095895780993234588

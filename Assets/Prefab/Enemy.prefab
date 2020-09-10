@@ -423,9 +423,9 @@ GameObject:
   - component: {fileID: 2892740742705242391}
   - component: {fileID: 7237298499619981002}
   - component: {fileID: 3622964471289006827}
-  - component: {fileID: -3586491271261234640}
   - component: {fileID: 7879409466450576874}
   - component: {fileID: 6733996126093324369}
+  - component: {fileID: 201929068848706156}
   m_Layer: 5
   m_Name: Enemy
   m_TagString: Untagged
@@ -492,20 +492,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &-3586491271261234640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7631634176813523366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d9ec02d16cbd5b4b96cbcfba6628001, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  unitName: Behemoth
-  unitMaxHP: 475
 --- !u!114 &7879409466450576874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,7 +501,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7631634176813523366}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd6205d47366733438226283211172b1, type: 3}
+  m_Script: {fileID: 11500000, guid: 46d27e23e536b9943bf632720c749c46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!95 &6733996126093324369
@@ -537,6 +523,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &201929068848706156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7631634176813523366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de831736f8ab0aa49895232f364aaf48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monster: {fileID: 0}
+  healthBar: {fileID: 2882284371160154851}
+  monsterSprite: {fileID: 3622964471289006827}
+  monsterNameText: {fileID: 2404312368926761081}
 --- !u!1 &9182216869632965389
 GameObject:
   m_ObjectHideFlags: 0
