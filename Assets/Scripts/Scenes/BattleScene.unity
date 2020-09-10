@@ -386,7 +386,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 971186469}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -528,8 +528,8 @@ RectTransform:
   - {fileID: 223043735}
   - {fileID: 4351354830148758694}
   - {fileID: 1097117319}
-  - {fileID: 1380890729}
   - {fileID: 788231989}
+  - {fileID: 2122314468}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -602,7 +602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf46430141dcaf44c9936f627801d042, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  card: {fileID: 11400000, guid: 0a9df233b1719934aa54fefea177266c, type: 2}
+  cardSOs: []
   cardPrefab: {fileID: 473548452875260794, guid: 2687bbda792fdeb4d86e42379e936f85,
     type: 3}
   handArea: {fileID: 223043734}
@@ -612,9 +612,12 @@ MonoBehaviour:
   enemyPrefab: {fileID: 7631634176813523366, guid: f3334b2b5d5f8fd4ba120d13fb9a5b18,
     type: 3}
   playerBattleStation: {fileID: 1097117319}
-  enemyBattleStation: {fileID: 1380890729}
+  enemyBattleStationsGrid: {fileID: 2122314468}
+  enemyBattleStationPrefab: {fileID: 4846559107378448042, guid: 34a43bcd8afd85041836429e1925002e,
+    type: 3}
   state: 0
-  playerBattleAnimation: {fileID: 0}
+  playerBattleAnimator: {fileID: 0}
+  enemyBattleAnimator: {fileID: 0}
 --- !u!4 &1108402067
 Transform:
   m_ObjectHideFlags: 0
@@ -629,7 +632,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1380890728
+--- !u!1 &2122314467
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -637,33 +640,58 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1380890729}
+  - component: {fileID: 2122314468}
+  - component: {fileID: 2122314469}
   m_Layer: 5
-  m_Name: EnemyBattleStation
-  m_TagString: Enemy
+  m_Name: EnemiesGrid
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1380890729
+--- !u!224 &2122314468
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1380890728}
+  m_GameObject: {fileID: 2122314467}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 971186469}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 306.00003, y: -10.291992}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 318, y: 5.8033}
+  m_SizeDelta: {x: 368.2418, y: 364.96594}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2122314469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122314467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 100, y: 100}
+  m_Spacing: {x: 40, y: 10}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1001 &2455021455003720191
 PrefabInstance:
   m_ObjectHideFlags: 0

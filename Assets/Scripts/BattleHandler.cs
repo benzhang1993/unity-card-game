@@ -16,11 +16,12 @@ public class BattleHandler : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject enemyPrefab;
     public Transform playerBattleStation;
-    public Transform enemyBattleStation;
+    public Transform enemyBattleStationsGrid;
+    public GameObject enemyBattleStationPrefab;
     private PlayerInfo playerInfo;
     private MonsterInfo enemyInfo;
     private GameObject playerGO;
-    private GameObject enemyGO;
+    private List<GameObject> enemyGOs;
     public BattleState state;
     public BattleAnimator playerBattleAnimator;
     public BattleAnimator enemyBattleAnimator;
@@ -36,12 +37,15 @@ public class BattleHandler : MonoBehaviour
 
     IEnumerator setUpBattle()
     {
+        // TODO - selective load monster instead of all
+        System.Object[] loadedMonsters = Resources.LoadAll("Monsters", typeof(Monster));
+        Monster[] monstersList = Array.ConvertAll(loadedMonsters, item => (Monster) item);
         playerGO = initializePlayer(playerPrefab, playerBattleStation);
-        enemyGO = initializeMonster(enemyPrefab, enemyBattleStation);
+        enemyGOs = initializeMonsters(enemyPrefab, enemyBattleStationPrefab, monstersList, enemyBattleStationsGrid);
         playerBattleAnimator = playerGO.GetComponent<BattleAnimator>();
         playerBattleAnimator.setActor(playerGO);
-        enemyBattleAnimator = enemyGO.GetComponent<BattleAnimator>();
-        enemyBattleAnimator.setActor(enemyGO);
+        enemyBattleAnimator = enemyGOs[0].GetComponent<BattleAnimator>();
+        enemyBattleAnimator.setActor(enemyGOs[0]);
 
         setUpDeck();
 
@@ -57,15 +61,18 @@ public class BattleHandler : MonoBehaviour
         return unitGO;
     }
 
-    // TODO - change return type to List<GameObject> for list of monsters in battle
-    GameObject initializeMonster(GameObject unitPrefab, Transform unitBattleStation)
+    List<GameObject> initializeMonsters(GameObject unitPrefab, GameObject enemyBattleStationPrefab, Monster[] enemySOs, Transform enemyBattleStationsGrid)
     {
-        // TODO - selective load monster instead of all
-        System.Object[] loadedMonsters = Resources.LoadAll("Monsters", typeof(Monster));
-
-        GameObject unitGO = Instantiate(unitPrefab, unitBattleStation);
-        unitGO.GetComponent<MonsterInfo>().monster = (Monster) loadedMonsters[0];
-        return unitGO;
+        List<GameObject> enemyGOs = new List<GameObject>();
+        for(int i = 0; i < enemySOs.Length; i++)
+        {
+            Debug.Log("making an enemy battlestation");
+            GameObject enemyBattleStation = Instantiate(enemyBattleStationPrefab, enemyBattleStationsGrid);
+            GameObject unitGO = Instantiate(unitPrefab, enemyBattleStation.transform);
+            unitGO.GetComponent<MonsterInfo>().monster = enemySOs[i];
+            enemyGOs.Add(unitGO);
+        }
+        return enemyGOs;
     }
 
     public void setUpDeck()
@@ -97,7 +104,7 @@ public class BattleHandler : MonoBehaviour
         CardEffect cardEffect = cardPlayed.GetComponent<CardEffect>();
         if(cardEffect.getDamage() != 0)
         {
-            processDashAttackEffect(playerGO, enemyGO, playerBattleAnimator, enemyBattleAnimator, cardPlayed.GetComponent<CardEffect>().getDamage(), postPlayerTurn);
+            processDashAttackEffect(playerGO, enemyGOs[0], playerBattleAnimator, enemyBattleAnimator, cardPlayed.GetComponent<CardEffect>().getDamage(), postPlayerTurn);
         }
         else if(cardEffect.getHealing() != 0)
         {
@@ -117,7 +124,7 @@ public class BattleHandler : MonoBehaviour
         yield return new WaitForSeconds(.5f);
         battleState.GetComponent<Text>().text = "Enemy Turn";
         int enemyAttackDamage = 50;
-        processDashAttackEffect(enemyGO, playerGO, enemyBattleAnimator, playerBattleAnimator, enemyAttackDamage, postEnemyTurn);
+        processDashAttackEffect(enemyGOs[0], playerGO, enemyBattleAnimator, playerBattleAnimator, enemyAttackDamage, postEnemyTurn);
     }
 
     private void processHealingEffect(GameObject healerGO, GameObject targetGO, BattleAnimator healerAnimator, 
@@ -166,7 +173,7 @@ public class BattleHandler : MonoBehaviour
     private void postPlayerTurn()
     {
         Debug.Log(movesLeft);
-        if(enemyGO.GetComponentInChildren<HealthBar>().getCurrentHealth() <= 0)
+        if(enemyGOs[0].GetComponentInChildren<HealthBar>().getCurrentHealth() <= 0)
         {
             state = BattleState.VICTORY;
             endBattle();
