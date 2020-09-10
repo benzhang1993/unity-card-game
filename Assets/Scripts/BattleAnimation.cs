@@ -52,12 +52,14 @@ public class BattleAnimation : MonoBehaviour
 
         dashToPosition(enemyLocation, () => {
             actor.GetComponent<Animator>().SetTrigger("Attack");
+            target.GetComponent<Animator>().SetTrigger("Hurt");
             // animate damage taken
             displayActionResult(ActionType.Attack, damage, target);
             onHitAnimationPlayed();
             StartCoroutine(WaitForAnimation(actor.GetComponent<Animator>(), ()=>
             {
                 hideActionResult(target);
+                target.GetComponent<Animator>().SetTrigger("Idle");
                 dashToPosition(attackerOriginalLocation, () => {
                     actor.GetComponent<Animator>().SetTrigger("Idle");
                     onAttackAnimationComplete();
@@ -80,6 +82,7 @@ public class BattleAnimation : MonoBehaviour
         displayActionResult(ActionType.Healing, healing, target);
         StartCoroutine(WaitForAnimation(actor.GetComponent<Animator>(), ()=>
         {
+            actor.GetComponent<Animator>().SetTrigger("Idle");
             hideActionResult(targetGO);
             onHealAnimationComplete();
         }));
