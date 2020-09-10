@@ -17,3 +17,5 @@ MonoBehaviour:
   artwork: {fileID: 0}
   manaCost: 1
   damage: 0
+  healing: 0
+  shielding: 60

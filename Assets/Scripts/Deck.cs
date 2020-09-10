@@ -30,6 +30,7 @@ public class Deck
         return cardToDraw;
     }
 
+    // TODO - remove card from deck after drawing
     public List<Card> draw(int numberOfCards)
     {
         if(numberOfCards > deck.Count)

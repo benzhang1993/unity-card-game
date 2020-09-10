@@ -23,6 +23,8 @@ public class BattleHandler : MonoBehaviour
     private GameObject enemyGO;
     public BattleState state;
     public BattleAnimation playerBattleAnimation;
+    public BattleAnimation enemyBattleAnimation;
+    Action onPlayCardComplete;
     private int movesLeft = 5;
 
     void Start()
@@ -37,7 +39,9 @@ public class BattleHandler : MonoBehaviour
         playerGO = initializeUnit(playerPrefab, playerBattleStation, playerUnit);
         enemyGO = initializeUnit(enemyPrefab, enemyBattleStation, enemyUnit);
         playerBattleAnimation = playerGO.GetComponent<BattleAnimation>();
-        playerBattleAnimation.setAttacker(playerGO);
+        playerBattleAnimation.setActor(playerGO);
+        enemyBattleAnimation = enemyGO.GetComponent<BattleAnimation>();
+        enemyBattleAnimation.setActor(enemyGO);
 
         setUpDeck();
 
@@ -62,6 +66,7 @@ public class BattleHandler : MonoBehaviour
         System.Object[] loadedCards = Resources.LoadAll("Cards", typeof(Card));
         cardSOs = Array.ConvertAll(loadedCards, item => (Card) item);
         deck.loadCardArray(cardSOs);
+        deck.shuffle();
     }
 
     void playerTurn()
@@ -80,36 +85,66 @@ public class BattleHandler : MonoBehaviour
 
     public void playCard(GameObject cardPlayed, Action onPlayCardComplete)
     {
-        playerBattleAnimation.performDashAttack(enemyGO, cardPlayed.GetComponent<CardEffect>().getDamage(),
-        // on attack hit callback
-        ()=>
+        this.onPlayCardComplete = onPlayCardComplete;
+        CardEffect cardEffect = cardPlayed.GetComponent<CardEffect>();
+        if(cardEffect.getDamage() != 0)
         {
-            HealthBar enemyHealthBar = GameObject.FindGameObjectWithTag("Enemy").GetComponentInChildren<HealthBar>();
-            enemyHealthBar.takeDamage(cardPlayed.GetComponent<CardEffect>().getDamage());
+            processDashAttackEffect(playerGO, enemyGO, playerBattleAnimation, enemyBattleAnimation, cardPlayed.GetComponent<CardEffect>().getDamage(), postPlayerTurn);
         }
-        // on attack complete callback
-        , 
-        ()=> {
-            if(enemyGO.GetComponentInChildren<HealthBar>().getCurrentHealth() <= 0)
-            {
-                state = BattleState.VICTORY;
-                endBattle();
-            } 
-            else if(--movesLeft == 0)
-            { 
-                StartCoroutine(enemyTurn());
-            }
-            onPlayCardComplete();
-        });
+        else if(cardEffect.getHealing() != 0)
+        {
+            processHealingEffect(playerGO, playerGO, playerBattleAnimation, enemyBattleAnimation, cardPlayed.GetComponent<CardEffect>().getHealing(), postPlayerTurn);
+        }
+        else if(cardEffect.getShielding() != 0)
+        {
+            postPlayerTurn();
+        }
+        else{
+            postPlayerTurn();
+        }
     }
 
     IEnumerator enemyTurn()
     {
-        battleState.GetComponent<Text>().text = "Enemy Turn";
-        HealthBar playerHealthBar = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<HealthBar>();
-        playerHealthBar.takeDamage(100);
         yield return new WaitForSeconds(.5f);
-        if(playerHealthBar.getCurrentHealth() <= 0)
+        battleState.GetComponent<Text>().text = "Enemy Turn";
+        int enemyAttackDamage = 50;
+        processDashAttackEffect(enemyGO, playerGO, enemyBattleAnimation, playerBattleAnimation, enemyAttackDamage, postEnemyTurn);
+    }
+
+    private void processHealingEffect(GameObject healerGO, GameObject targetGO, BattleAnimation healerAnimator, 
+        BattleAnimation targetAnimator, int healing, Action postAnimation)
+    {
+        healerAnimator.performHealingAnimation(targetGO, healing,
+        // on attack hit callback
+        ()=>
+        {
+            HealthBar targetHealthBar = targetGO.GetComponentInChildren<HealthBar>();
+            targetHealthBar.heal(healing);
+            postAnimation();
+        });
+    }
+
+    private void processDashAttackEffect(GameObject attackerGO, GameObject targetGO, BattleAnimation attackerAnimator, 
+        BattleAnimation targetAnimator, int damage, Action postAnimation)
+    {
+        attackerAnimator.performDashAttackAnimation(targetGO, damage,
+        // on attack hit callback
+        ()=>
+        {
+            HealthBar targetHealthBar = targetGO.GetComponentInChildren<HealthBar>();
+            targetHealthBar.takeDamage(damage);
+        }
+        // on attack complete callback
+        , 
+        ()=> {
+            postAnimation();
+        });
+    }
+
+    private void postEnemyTurn()
+    {
+        if(playerGO.GetComponentInChildren<HealthBar>().getCurrentHealth() <= 0)
         {
             state = BattleState.DEFEATED;
             endBattle();
@@ -120,7 +155,22 @@ public class BattleHandler : MonoBehaviour
         }
     }
 
-    void endBattle()
+    private void postPlayerTurn()
+    {
+        Debug.Log(movesLeft);
+        if(enemyGO.GetComponentInChildren<HealthBar>().getCurrentHealth() <= 0)
+        {
+            state = BattleState.VICTORY;
+            endBattle();
+        } 
+        else if(--movesLeft == 0)
+        { 
+            StartCoroutine(enemyTurn());
+        }
+        onPlayCardComplete();
+    }
+
+    private void endBattle()
     {
         if(state == BattleState.VICTORY)
         {

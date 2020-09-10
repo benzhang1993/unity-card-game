@@ -12,4 +12,6 @@ public class Card : ScriptableObject
 
     public int manaCost;
     public int damage;
+    public int healing;
+    public int shielding;
 }
