@@ -8,25 +8,28 @@ public enum BattleState { START, PLAYERTURN, ENEMYTURN, VICTORY, DEFEATED }
 
 public class BattleHandler : MonoBehaviour
 {
-    public Deck deck;
-    public Card[] cardSOs;
     public GameObject cardPrefab;
-    public GameObject handArea;
-    public GameObject battleState;
     public GameObject playerPrefab;
     public GameObject enemyPrefab;
+    public GameObject handArea;
+    public GameObject battleAnnoucement;
     public Transform playerBattleStation;
     public Transform enemyBattleStationsGrid;
     public GameObject enemyBattleStationPrefab;
+
+    Action onPlayCardComplete;
+
     private PlayerInfo playerInfo;
     private MonsterInfo enemyInfo;
     private GameObject playerGO;
     private List<GameObject> enemyGOs;
-    public BattleState state;
-    public BattleAnimator playerBattleAnimator;
-    public BattleAnimator enemyBattleAnimator;
-    Action onPlayCardComplete;
+    private BattleState state;
+    private BattleAnimator playerBattleAnimator;
+    private BattleAnimator enemyBattleAnimator;
     private int movesLeft = 5;
+    private GameObject currentEnemyTarget;
+    private Deck deck;
+    private Card[] cardSOs;
 
     void Start()
     {
@@ -42,10 +45,17 @@ public class BattleHandler : MonoBehaviour
         Monster[] monstersList = Array.ConvertAll(loadedMonsters, item => (Monster) item);
         playerGO = initializePlayer(playerPrefab, playerBattleStation);
         enemyGOs = initializeMonsters(enemyPrefab, enemyBattleStationPrefab, monstersList, enemyBattleStationsGrid);
+        enemyGOs[0].GetComponent<OnTarget>().setTargetArrow();
+        currentEnemyTarget = enemyGOs[0];
         playerBattleAnimator = playerGO.GetComponent<BattleAnimator>();
         playerBattleAnimator.setActor(playerGO);
-        enemyBattleAnimator = enemyGOs[0].GetComponent<BattleAnimator>();
-        enemyBattleAnimator.setActor(enemyGOs[0]);
+        // TODO - dont need to set actor
+        foreach(GameObject enemy in enemyGOs)
+        {
+            enemyBattleAnimator = enemy.GetComponent<BattleAnimator>();
+            enemyBattleAnimator.setActor(enemy);
+        }
+        
 
         setUpDeck();
 
@@ -70,6 +80,7 @@ public class BattleHandler : MonoBehaviour
             GameObject enemyBattleStation = Instantiate(enemyBattleStationPrefab, enemyBattleStationsGrid);
             GameObject unitGO = Instantiate(unitPrefab, enemyBattleStation.transform);
             unitGO.GetComponent<MonsterInfo>().monster = enemySOs[i];
+            unitGO.GetComponent<OnTarget>().setBattleHandler(this);
             enemyGOs.Add(unitGO);
         }
         return enemyGOs;
@@ -86,7 +97,7 @@ public class BattleHandler : MonoBehaviour
 
     void playerTurn()
     {
-        battleState.GetComponent<Text>().text = "Your Turn";
+        battleAnnoucement.GetComponent<Text>().text = "Your Turn";
         movesLeft = 5;
         List<Card> hand = deck.draw(5); 
         for(int i = 0; i < hand.Count; i++)
@@ -104,7 +115,7 @@ public class BattleHandler : MonoBehaviour
         CardEffect cardEffect = cardPlayed.GetComponent<CardEffect>();
         if(cardEffect.getDamage() != 0)
         {
-            processDashAttackEffect(playerGO, enemyGOs[0], playerBattleAnimator, enemyBattleAnimator, cardPlayed.GetComponent<CardEffect>().getDamage(), postPlayerTurn);
+            processDashAttackEffect(playerGO, currentEnemyTarget, playerBattleAnimator, enemyBattleAnimator, cardPlayed.GetComponent<CardEffect>().getDamage(), postPlayerTurn);
         }
         else if(cardEffect.getHealing() != 0)
         {
@@ -119,12 +130,22 @@ public class BattleHandler : MonoBehaviour
         }
     }
 
+    public void selectTarget(GameObject target)
+    {
+        if(currentEnemyTarget != null)
+        {
+            currentEnemyTarget.GetComponent<OnTarget>().hideTargetArrow();
+        }
+        this.currentEnemyTarget = target;
+    }
+
     IEnumerator enemyTurn()
     {
         yield return new WaitForSeconds(.5f);
-        battleState.GetComponent<Text>().text = "Enemy Turn";
+        battleAnnoucement.GetComponent<Text>().text = "Enemy Turn";
         int enemyAttackDamage = 50;
-        processDashAttackEffect(enemyGOs[0], playerGO, enemyBattleAnimator, playerBattleAnimator, enemyAttackDamage, postEnemyTurn);
+        //TODO - remove battleanimators since they can be retrieved from GO
+        processDashAttackEffect(currentEnemyTarget, playerGO, enemyBattleAnimator, playerBattleAnimator, enemyAttackDamage, postEnemyTurn);
     }
 
     private void processHealingEffect(GameObject healerGO, GameObject targetGO, BattleAnimator healerAnimator, 
@@ -173,7 +194,7 @@ public class BattleHandler : MonoBehaviour
     private void postPlayerTurn()
     {
         Debug.Log(movesLeft);
-        if(enemyGOs[0].GetComponentInChildren<HealthBar>().getCurrentHealth() <= 0)
+        if(isAllEnemiesDefeated(enemyGOs))
         {
             state = BattleState.VICTORY;
             endBattle();
@@ -185,15 +206,24 @@ public class BattleHandler : MonoBehaviour
         onPlayCardComplete();
     }
 
+    private bool isAllEnemiesDefeated(List<GameObject> enemyGOs)
+    {
+        foreach(GameObject enemy in enemyGOs)
+        {
+            if(enemy.GetComponentInChildren<HealthBar>().getCurrentHealth() > 0) return false;
+        }
+        return true;
+    }
+
     private void endBattle()
     {
         if(state == BattleState.VICTORY)
         {
-            battleState.GetComponent<Text>().text = "Victory";
+            battleAnnoucement.GetComponent<Text>().text = "Victory";
         }
         else if (state == BattleState.DEFEATED)
         {
-            battleState.GetComponent<Text>().text = "Defeat";
+            battleAnnoucement.GetComponent<Text>().text = "Defeat";
         }
     }
 }

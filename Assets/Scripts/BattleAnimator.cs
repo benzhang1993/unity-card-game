@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class BattleAnimator : MonoBehaviour
 {
+    // TODO - remove actor or set it as gameObject instead of passing it in
     private GameObject actor;
     private GameObject target;
     private State state;
