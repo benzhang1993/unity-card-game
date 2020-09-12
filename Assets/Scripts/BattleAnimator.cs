@@ -5,18 +5,24 @@ using UnityEngine;
 using UnityEngine.UI;
 public class BattleAnimator : MonoBehaviour
 {
-    // TODO - remove actor or set it as gameObject instead of passing it in
     private GameObject actor;
     private GameObject target;
     private State state;
-    private enum State { Idle, Dashing }
-    private enum ActionType { Attack, Healing, Shielding}
+    private enum State { Idle, Dashing, Death }
+    private enum ActionType { Attack, Healing, Shielding }
     private Action onDashComplete;
     private Vector3 targetLocation;
+    
+    // for death animation
+    private Color alphaColor;
+    private float timeToFade = 2.0f; 
 
     private void Awake()
     {
         this.state = State.Idle;
+        actor = gameObject;
+        alphaColor = gameObject.GetComponent<Image>().color;
+        alphaColor.a = 0;
     }
 
     // Update is called once per frame
@@ -41,6 +47,13 @@ public class BattleAnimator : MonoBehaviour
                     onDashComplete();
                 }
                 break;
+            case State.Death:
+                gameObject.GetComponent<Image>().color = Color.Lerp(gameObject.GetComponent<Image>().color, alphaColor, timeToFade * Time.deltaTime);
+                if(gameObject.GetComponent<Image>().color.a < 0.1)
+                {
+                    gameObject.SetActive(false);
+                }
+                break;
         }
     }
 
@@ -54,7 +67,7 @@ public class BattleAnimator : MonoBehaviour
         dashToPosition(enemyLocation, () => {
             actor.GetComponent<Animator>().SetTrigger("Attack");
             target.GetComponent<Animator>().SetTrigger("Hurt");
-            // animate damage taken
+            // TODO - animate damage taken
             displayActionResult(ActionType.Attack, damage, target);
             onHitAnimationPlayed();
             StartCoroutine(WaitForAnimation(actor.GetComponent<Animator>(), ()=>
@@ -67,13 +80,6 @@ public class BattleAnimator : MonoBehaviour
                 });
             }));
         });
-    }
- 
-    private void dashToPosition(Vector3 location, Action onDashComplete)
-    {
-        this.targetLocation = location;
-        state = State.Dashing;
-        this.onDashComplete = onDashComplete;
     }
 
     public void performHealingAnimation(GameObject targetGO, int healing, Action onHealAnimationComplete)
@@ -89,14 +95,16 @@ public class BattleAnimator : MonoBehaviour
         }));
     }
 
-    public void setActor(GameObject actor)
+    public void playDeathAnimation()
     {
-        this.actor = actor;
+        state = State.Death;
     }
 
-    public void setTarget(GameObject target)
+    private void dashToPosition(Vector3 location, Action onDashComplete)
     {
-        this.target = target;
+        this.targetLocation = location;
+        state = State.Dashing;
+        this.onDashComplete = onDashComplete;
     }
 
     IEnumerator WaitForAnimation (Animator anim, Action action) {

@@ -16,4 +16,6 @@ MonoBehaviour:
   description: Deal 50 damage to target
   artwork: {fileID: 21300000, guid: 0ffdf19da652afe48a12609e61ed7b94, type: 3}
   manaCost: 1
-  damage: 50
+  damage: 500
+  healing: 0
+  shielding: 0

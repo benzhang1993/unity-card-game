@@ -9,8 +9,12 @@ public class OnTarget : MonoBehaviour, IPointerDownHandler
     private BattleHandler battleHandler;
     public Image targetArrow;
 
+    void Awake()
+    {
+        hideTargetArrow();
+    }
+
     public void OnPointerDown(PointerEventData eventData) {
-        setTargetArrow();
         battleHandler.selectTarget(gameObject);
     }
 
