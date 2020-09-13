@@ -13,14 +13,8 @@ public class ReceiveCardPlay : MonoBehaviour, IDropHandler
         if(cardIsPlayable(playedCard))
         {
             playedCard.SetActive(false);
-            battleHandler.GetComponent<BattleHandler>().playCard(playedCard, ()=> {
-                Destroy(playedCard);
-            });     
+            battleHandler.GetComponent<BattleHandler>().playCard(playedCard);     
         }
-        else 
-        {
-            // TODO: handle card snapback
-        }  
     }
 
     private bool cardIsPlayable(GameObject card)

@@ -18,14 +18,12 @@ public class BattleHandler : MonoBehaviour
     public GameObject enemyBattleStationPrefab;
     public Text playerMana;
 
-    Action onPlayCardComplete;
     private GameObject playerGO;
     private List<GameObject> enemyGOs;
     private BattleState state;
-    private int movesLeft = 5;
     private GameObject currentEnemyTarget;
     private Deck deck;
-    private Card[] cardSOs;
+    List<GameObject> hand;
     private int maxMana;
     private int currentMana;
 
@@ -33,6 +31,7 @@ public class BattleHandler : MonoBehaviour
     {
         state = BattleState.START;
         deck = new Deck();
+        hand = new List<GameObject>();
         StartCoroutine(setUpBattle());
         currentMana = maxMana = 3;
         playerMana.text = currentMana.ToString();
@@ -82,31 +81,40 @@ public class BattleHandler : MonoBehaviour
     {
         // Resource.LoadAll only looks for folders under the "Resources" folder
         System.Object[] loadedCards = Resources.LoadAll("Cards", typeof(Card));
-        cardSOs = Array.ConvertAll(loadedCards, item => (Card) item);
-        deck.loadCardArray(cardSOs);
+        Card[] cardSOs = Array.ConvertAll(loadedCards, item => (Card) item);
+        List<GameObject> cardGOs = initializeCardGOs(cardSOs);
+        deck.setDeck(cardGOs);
         deck.shuffle();
     }
 
-    void playerTurn()
+    private List<GameObject> initializeCardGOs(Card[] cardSOs)
     {
-        battleAnnoucement.GetComponent<Text>().text = "Your Turn";
-        movesLeft = 5;
-        List<Card> hand = deck.draw(5); 
-        // TODO - refactor drawing method
-        for(int i = 0; i < hand.Count; i++)
+        List<GameObject> cardGOs = new List<GameObject>();
+        foreach(Card cardSO in cardSOs)
         {
             GameObject playerCard = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-            playerCard.GetComponent<CardDisplay>().card = hand[i];
-            playerCard.GetComponent<CardEffect>().card = hand[i];
+            playerCard.GetComponent<CardDisplay>().card = cardSO;
+            playerCard.GetComponent<CardEffect>().card = cardSO;
             playerCard.transform.SetParent(handArea.transform, false);
+            cardGOs.Add(playerCard);
+        }
+        return cardGOs;
+    }
+
+    public void playerTurn()
+    {
+        battleAnnoucement.GetComponent<Text>().text = "Your Turn";
+        setMana(maxMana);
+        hand = deck.draw(5);
+        foreach(GameObject card in hand)
+        {
+            card.SetActive(true);
         }
     }
 
-    public void playCard(GameObject cardPlayed, Action onPlayCardComplete)
+    public void playCard(GameObject cardPlayed)
     {
-        this.onPlayCardComplete = onPlayCardComplete;
-        currentMana -= cardPlayed.GetComponent<CardEffect>().getManaCost();
-        playerMana.text = currentMana.ToString();
+        setMana(currentMana - cardPlayed.GetComponent<CardEffect>().getManaCost());
         CardEffect cardEffect = cardPlayed.GetComponent<CardEffect>();
         if(cardEffect.getDamage() != 0)
         {
@@ -123,6 +131,7 @@ public class BattleHandler : MonoBehaviour
         else{
             postPlayerTurn();
         }
+        deck.sendToDiscard(cardPlayed);
     }
 
     public void selectTarget(GameObject target)
@@ -131,7 +140,7 @@ public class BattleHandler : MonoBehaviour
         {
             currentEnemyTarget.GetComponent<OnTarget>().hideTargetArrow();
         }
-        this.currentEnemyTarget = target;
+        currentEnemyTarget = target;
         target.GetComponent<OnTarget>().setTargetArrow();
     }
 
@@ -207,17 +216,31 @@ public class BattleHandler : MonoBehaviour
 
     private void postPlayerTurn()
     {
-        Debug.Log(movesLeft);
         if(isAllEnemiesDefeated(enemyGOs))
         {
             state = BattleState.VICTORY;
             endBattle();
         } 
-        else if(--movesLeft == 0)
+        else if(currentMana <= 0)
         { 
+            discardHand();
             StartCoroutine(enemyTurn());
         }
-        onPlayCardComplete();
+    }
+
+    private void discardHand()
+    {
+        foreach(GameObject card in hand)
+        {
+            deck.sendToDiscard(card);
+        }
+        hand.Clear();
+    }
+
+    private void setMana(int mana)
+    {
+        currentMana = mana;
+        playerMana.text = currentMana.ToString();
     }
 
     private bool isAllEnemiesDefeated(List<GameObject> enemyGOs)

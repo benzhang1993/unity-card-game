@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class DragCards : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     private RectTransform rectTransform;
+    private Vector3 originalPosition;
     
     private void Awake()
     {
@@ -14,6 +15,7 @@ public class DragCards : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
 
     public void OnPointerDown(PointerEventData eventData) {
         Debug.Log("OnPointerDown");
+        originalPosition = rectTransform.anchoredPosition;
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
@@ -24,5 +26,6 @@ public class DragCards : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
     }
     public void OnEndDrag(PointerEventData eventData) {
         Debug.Log("OnEndDrag");
+        rectTransform.anchoredPosition = originalPosition;
     }
 }
