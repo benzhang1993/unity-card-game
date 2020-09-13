@@ -16,6 +16,7 @@ public class BattleHandler : MonoBehaviour
     public Transform playerBattleStation;
     public Transform enemyBattleStationsGrid;
     public GameObject enemyBattleStationPrefab;
+    public Text playerMana;
 
     Action onPlayCardComplete;
     private GameObject playerGO;
@@ -25,12 +26,16 @@ public class BattleHandler : MonoBehaviour
     private GameObject currentEnemyTarget;
     private Deck deck;
     private Card[] cardSOs;
+    private int maxMana;
+    private int currentMana;
 
     void Start()
     {
         state = BattleState.START;
         deck = new Deck();
         StartCoroutine(setUpBattle());
+        currentMana = maxMana = 3;
+        playerMana.text = currentMana.ToString();
     }
 
     IEnumerator setUpBattle()
@@ -100,6 +105,8 @@ public class BattleHandler : MonoBehaviour
     public void playCard(GameObject cardPlayed, Action onPlayCardComplete)
     {
         this.onPlayCardComplete = onPlayCardComplete;
+        currentMana -= cardPlayed.GetComponent<CardEffect>().getManaCost();
+        playerMana.text = currentMana.ToString();
         CardEffect cardEffect = cardPlayed.GetComponent<CardEffect>();
         if(cardEffect.getDamage() != 0)
         {
@@ -126,6 +133,11 @@ public class BattleHandler : MonoBehaviour
         }
         this.currentEnemyTarget = target;
         target.GetComponent<OnTarget>().setTargetArrow();
+    }
+
+    public int getCurrenMana()
+    {
+        return currentMana;
     }
 
     IEnumerator enemyTurn()

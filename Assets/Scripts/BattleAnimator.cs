@@ -15,7 +15,7 @@ public class BattleAnimator : MonoBehaviour
     
     // for death animation
     private Color alphaColor;
-    private float timeToFade = 2.0f; 
+    private float timeToFade = 1.5f; 
 
     private void Awake()
     {

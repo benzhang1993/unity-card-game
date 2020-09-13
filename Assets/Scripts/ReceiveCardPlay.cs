@@ -10,9 +10,27 @@ public class ReceiveCardPlay : MonoBehaviour, IDropHandler
     {
         Debug.Log("received card");
         GameObject playedCard = eventData.pointerDrag;
-        playedCard.SetActive(false);
-        battleHandler.GetComponent<BattleHandler>().playCard(playedCard, ()=> {
-            Destroy(playedCard);
-        });     
+        if(cardIsPlayable(playedCard))
+        {
+            playedCard.SetActive(false);
+            battleHandler.GetComponent<BattleHandler>().playCard(playedCard, ()=> {
+                Destroy(playedCard);
+            });     
+        }
+        else 
+        {
+            // TODO: handle card snapback
+        }  
+    }
+
+    private bool cardIsPlayable(GameObject card)
+    {
+        if(card.GetComponent<CardEffect>().getManaCost() <= battleHandler.getCurrenMana())
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
