@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragCards : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class DragCards : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private RectTransform rectTransform;
     private Vector3 originalPosition;
+    private float enlargeScale = 1.2f;
     
     private void Awake()
     {
@@ -15,7 +16,12 @@ public class DragCards : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
 
     public void OnPointerDown(PointerEventData eventData) {
         Debug.Log("OnPointerDown");
-        originalPosition = rectTransform.anchoredPosition;
+
+        // transform.localScale = new Vector3(1, 1, 1);
+        // rectTransform.anchoredPosition = originalPosition;
+        // gameObject.GetComponent<Canvas>().sortingOrder = 0;
+
+        // originalPosition = rectTransform.anchoredPosition;
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
@@ -26,6 +32,22 @@ public class DragCards : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
     }
     public void OnEndDrag(PointerEventData eventData) {
         Debug.Log("OnEndDrag");
+        rectTransform.localScale = new Vector3(1, 1, 1);
         rectTransform.anchoredPosition = originalPosition;
+        gameObject.GetComponent<Canvas>().sortingOrder = 0;
+    }
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        originalPosition = rectTransform.anchoredPosition;
+        rectTransform.localScale += new Vector3(enlargeScale, enlargeScale, enlargeScale);
+        transform.position -= new Vector3(0, transform.position.y * enlargeScale/2f, 0);
+        gameObject.GetComponent<Canvas>().overrideSorting = true;
+        gameObject.GetComponent<Canvas>().sortingOrder = 2;
+    }
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        rectTransform.localScale = new Vector3(1, 1, 1);
+        rectTransform.anchoredPosition = originalPosition;
+        gameObject.GetComponent<Canvas>().sortingOrder = 0;
     }
 }

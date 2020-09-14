@@ -67,7 +67,6 @@ public class BattleHandler : MonoBehaviour
         List<GameObject> enemyGOs = new List<GameObject>();
         for(int i = 0; i < enemySOs.Length; i++)
         {
-            Debug.Log("making an enemy battlestation");
             GameObject enemyBattleStation = Instantiate(enemyBattleStationPrefab, enemyBattleStationsGrid);
             GameObject unitGO = Instantiate(unitPrefab, enemyBattleStation.transform);
             unitGO.GetComponent<MonsterInfo>().monster = enemySOs[i];
@@ -92,10 +91,9 @@ public class BattleHandler : MonoBehaviour
         List<GameObject> cardGOs = new List<GameObject>();
         foreach(Card cardSO in cardSOs)
         {
-            GameObject playerCard = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            GameObject playerCard = Instantiate(cardPrefab, handArea.transform);
             playerCard.GetComponent<CardDisplay>().card = cardSO;
             playerCard.GetComponent<CardEffect>().card = cardSO;
-            playerCard.transform.SetParent(handArea.transform, false);
             cardGOs.Add(playerCard);
         }
         return cardGOs;

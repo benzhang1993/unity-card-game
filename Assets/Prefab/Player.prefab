@@ -88,7 +88,6 @@ GameObject:
   - component: {fileID: 1702365029376043627}
   - component: {fileID: -6603289117329228599}
   - component: {fileID: 2082694980175289160}
-  - component: {fileID: 7095895780993234588}
   m_Layer: 5
   m_Name: Player
   m_TagString: Untagged
@@ -202,27 +201,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46d27e23e536b9943bf632720c749c46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!223 &7095895780993234588
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883079128686335121}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 1
-  m_TargetDisplay: 0
 --- !u!1 &2719116892912185180
 GameObject:
   m_ObjectHideFlags: 0
