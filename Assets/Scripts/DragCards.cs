@@ -7,7 +7,7 @@ public class DragCards : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
 {
     private RectTransform rectTransform;
     private Vector3 originalPosition;
-    private float enlargeScale = 1.2f;
+    private float enlargeScale = 1.1f;
     
     private void Awake()
     {
@@ -41,8 +41,9 @@ public class DragCards : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
         originalPosition = rectTransform.anchoredPosition;
         rectTransform.localScale += new Vector3(enlargeScale, enlargeScale, enlargeScale);
         transform.position -= new Vector3(0, transform.position.y * enlargeScale/2f, 0);
-        gameObject.GetComponent<Canvas>().overrideSorting = true;
-        gameObject.GetComponent<Canvas>().sortingOrder = 2;
+
+        // TODO - figure out why changing sortingOrder makes the card drop not detectable by playArea
+        // gameObject.GetComponent<Canvas>().sortingOrder = 1;
     }
     public void OnPointerExit(PointerEventData eventData)
     {

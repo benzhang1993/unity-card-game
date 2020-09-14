@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 223043735}
   - component: {fileID: 223043738}
   - component: {fileID: 223043736}
+  - component: {fileID: 223043737}
   m_Layer: 5
   m_Name: HandArea
   m_TagString: Untagged
@@ -182,6 +183,18 @@ MonoBehaviour:
   m_Spacing: {x: 20, y: 0}
   m_Constraint: 2
   m_ConstraintCount: 1
+--- !u!225 &223043737
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223043734}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!222 &223043738
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -425,6 +438,7 @@ GameObject:
   - component: {fileID: 788231989}
   - component: {fileID: 788231991}
   - component: {fileID: 788231990}
+  - component: {fileID: 788231992}
   m_Layer: 5
   m_Name: BattleAnnoucement
   m_TagString: Untagged
@@ -495,6 +509,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 788231988}
   m_CullTransparentMesh: 0
+--- !u!225 &788231992
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 788231988}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &971186465
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,6 +637,7 @@ GameObject:
   - component: {fileID: 980270066}
   - component: {fileID: 980270068}
   - component: {fileID: 980270067}
+  - component: {fileID: 980270069}
   m_Layer: 5
   m_Name: Mana
   m_TagString: Untagged
@@ -678,6 +705,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 980270065}
   m_CullTransparentMesh: 0
+--- !u!225 &980270069
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980270065}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &1097117318
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,6 +727,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1097117319}
+  - component: {fileID: 1097117320}
   m_Layer: 5
   m_Name: PlayerBattleStation
   m_TagString: Player
@@ -715,6 +755,18 @@ RectTransform:
   m_AnchoredPosition: {x: -335, y: -22}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &1097117320
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097117318}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &1108402065
 GameObject:
   m_ObjectHideFlags: 0
@@ -774,6 +826,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1800614977 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9185581059972175610, guid: 2e4cb76dd1b13ab49be3913bb09bfe73,
+    type: 3}
+  m_PrefabInstance: {fileID: 2455021455003720191}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &1800614978
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800614977}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2122314467
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,6 +855,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2122314468}
   - component: {fileID: 2122314469}
+  - component: {fileID: 2122314470}
   m_Layer: 5
   m_Name: EnemiesGrid
   m_TagString: Untagged
@@ -837,6 +908,18 @@ MonoBehaviour:
   m_Spacing: {x: 40, y: 10}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!225 &2122314470
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122314467}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1001 &978965825193591302
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1140,12 +1223,12 @@ PrefabInstance:
     - target: {fileID: 2194065730826663257, guid: 2e4cb76dd1b13ab49be3913bb09bfe73,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.000083923
+      value: 0.00012207
       objectReference: {fileID: 0}
     - target: {fileID: 2194065730826663257, guid: 2e4cb76dd1b13ab49be3913bb09bfe73,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -7.26778
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 2194065730826663257, guid: 2e4cb76dd1b13ab49be3913bb09bfe73,
         type: 3}
